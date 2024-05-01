@@ -5,6 +5,7 @@ import config
 
 user_private_router = Router()
 
+
 @user_private_router.message(CommandStart())
 async def start_cmd(message: types.Message):
     await message.answer(config.helpText)
@@ -12,7 +13,7 @@ async def start_cmd(message: types.Message):
 
 @user_private_router.message()
 async def get_text_messages(message: types.Message):
-    if message.text == config.textTrigger:
+    if message.text.lower() in config.textTrigger:
         try:
             config.candidate = message.reply_to_message.from_user.username
             config.messageCandidate = message.reply_to_message
@@ -31,10 +32,16 @@ async def get_text_messages(message: types.Message):
                              '/limit — Изменить количество голосов для кика пользователя\n'
                              '/kickWord — Добавить слова для начала голосования. Попробуйте, например "/setKickWord кик"')
     elif message.text.startswith("/limit"):
-        text = message.text.split(" ", 1)[1]
-        if text.isdigit():
-            config.limit = int(text)
+        if message.text != "/limit":
+            text = message.text.split(" ", 1)[1]
+            if text.isdigit():
+                config.limit = int(text)
+                await message.answer(
+                    f'Теперь лимит голосующих = {config.limit}.')
+
+    elif message.text.startswith("/kickWord"):
+        text = message.text.split(" ", 1)[1].strip()
+        if False == " " in text:
+            config.textTrigger.append(text)
             await message.answer(
-                f'Теперь лимит голосующих = {config.limit}.')
-    elif F.text is int:
-        await message.answer("настройка limit")
+                f'Теперь затриггерить @{config.botName} можно с момощью слов:\n{config.limit}.')
