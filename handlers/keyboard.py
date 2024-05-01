@@ -1,7 +1,6 @@
 from aiogram import types, Router
 
 import config
-from config import *
 
 keyboard_router = Router()
 
@@ -11,17 +10,17 @@ async def to_query(callback: types.callback_query):
     config.count_ban += 1
     await update_keyboard(callback.message)
 
-    if config.count_ban > limit:
+    if config.count_ban > config.limit:
         await remove_keyboard(callback.message)
         await remove_trigger(callback.message)
 
 
 def get_keyboard():
     button_ban = types.InlineKeyboardButton(
-        text=f'Заблокировать {count_ban}/{limit}',
+        text=f'Заблокировать {config.count_ban}/{config.limit}',
         callback_data="btnBanTrue_id")
     button_free = types.InlineKeyboardButton(
-        text=f'Помиловать ✔️ {count_free}/{limit}',
+        text=f'Помиловать ✔️ {config.count_free}/{config.limit}',
         callback_data="btnBanFalse_id")
     buttons = [
         [
@@ -34,11 +33,11 @@ def get_keyboard():
 
 
 def get_keyboard_text():
-    return f'@{userTrigger} предложено заблокировать пользователя @{candidate}'
+    return f'@{config.userTrigger} предложено заблокировать пользователя @{config.candidate}'
 
 
 async def update_keyboard(message: types.Message):
-    await message.edit_text(text=messageToBan,
+    await message.edit_text(text=config.messageToBan,
                             reply_markup=get_keyboard()
                             )
 
