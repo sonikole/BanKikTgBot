@@ -1,5 +1,4 @@
 from aiogram import types, Router
-
 import config
 
 keyboard_router = Router()
@@ -36,7 +35,7 @@ def get_keyboard_text():
 
 
 async def update_keyboard(message: types.Message):
-    await message.edit_text(text=config.messageToBan,
+    await message.edit_text(text=get_keyboard_text(),
                             reply_markup=get_keyboard()
                             )
 
@@ -45,3 +44,9 @@ async def remove_keyboard():
     await config.messageBot.delete()
     await config.messageTrigger.delete()
     await config.messageCandidate.delete()
+    config.count_ban = 0
+    config.count_free = 0
+    config.candidate = None
+    config.userTrigger = None
+    config.usersBan = []
+    config.usersFree = []

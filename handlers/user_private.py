@@ -1,8 +1,7 @@
 from aiogram import types, F, Router
 from aiogram.filters import CommandStart
-
-import config
 from handlers.keyboard import get_keyboard_text, get_keyboard
+import config
 
 user_private_router = Router()
 
@@ -13,14 +12,14 @@ async def start_cmd(message: types.Message):
 
 @user_private_router.message()
 async def get_text_messages(message: types.Message):
-    if message.text == config.messageBan:
+    if message.text == config.textTrigger:
         try:
             config.candidate = message.reply_to_message.from_user.username
             config.messageCandidate = message.reply_to_message
             config.userTrigger = message.from_user.username
             config.messageTrigger = message
             config.messageToBan = get_keyboard_text()
-            config.messageBot = await message.answer(text=config.messageToBan,
+            config.messageBot = await message.answer(text=get_keyboard_text(),
                                                      reply_markup=get_keyboard())
 
         except:

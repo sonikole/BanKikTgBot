@@ -2,7 +2,7 @@ TOKEN = "475191343:AAGXlZNUjXPlFr6zkq3bIVXY3fCHiF6JB-s"
 ALLOWED_UPDATES = 'message', 'edited_message'
 
 botName = "BanBot"
-messageBan = "@BanUser"
+textTrigger = "@BanUser"
 
 limit: int = 5
 count_ban: int = 0
@@ -17,5 +17,5 @@ messageBot = None
 usersBan = []
 usersFree = []
 
-helpText = f'Ответь на спам-сообщение "{messageBan}", чтобы начать голосование за бан пользователя.\n/help'
+helpText = f'Ответь на спам-сообщение "{textTrigger}", чтобы начать голосование за бан пользователя.\n/help'
 
