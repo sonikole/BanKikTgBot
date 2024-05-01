@@ -10,9 +10,8 @@ async def to_query(callback: types.callback_query):
     config.count_ban += 1
     await update_keyboard(callback.message)
 
-    if config.count_ban > config.limit:
-        await remove_keyboard(callback.message)
-        await remove_trigger(callback.message)
+    if config.count_ban >= config.limit:
+        await remove_keyboard()
 
 
 def get_keyboard():
@@ -42,9 +41,7 @@ async def update_keyboard(message: types.Message):
                             )
 
 
-async def remove_keyboard(message: types.Message):
-    await message.delete()
-
-
-async def remove_trigger(message: types.Message):
-    await message.from_user.delete()
+async def remove_keyboard():
+    await config.messageBot.delete()
+    await config.messageTrigger.delete()
+    await config.messageCandidate.delete()

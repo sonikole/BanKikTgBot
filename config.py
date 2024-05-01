@@ -4,13 +4,16 @@ ALLOWED_UPDATES = 'message', 'edited_message'
 botName = "BanBot"
 messageBan = "@BanUser"
 
-limit = 5
+limit: int = 5
 count_ban: int = 0
 count_free: int = 0
-candidate = "null"
-userTrigger = "null"
-messageToEdit_id = -1
-messageToBan = "null"
+
+candidate = None
+messageCandidate = None
+userTrigger = None
+messageTrigger = None
+messageBot = None
+
 usersBan = []
 usersFree = []
 
