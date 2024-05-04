@@ -12,10 +12,10 @@ userTrigger = None
 messageTrigger = None
 messageBot = None
 
+usersBan_username = []
 usersBan = []
-usersBan_id = []
+usersFree_username = []
 usersFree = []
-usersFree_id = []
 
 
 def getStartText():

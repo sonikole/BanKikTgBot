@@ -19,14 +19,14 @@ async def get_text_messages(message: types.Message):
         config.candidate = message.reply_to_message.from_user.username
         config.messageCandidate = message.reply_to_message
         config.userTrigger = message.from_user.username
-        config.usersBan.append('@' + config.userTrigger)
-        config.usersBan_id.append(message.from_user.id)
+        config.usersBan_username.append('@' + config.userTrigger)
+        config.usersBan.append(message.from_user)
         config.messageTrigger = message
         config.messageToBan = get_keyboard_text()
         config.messageBot = await message.answer(text=get_keyboard_text(),
                                                  reply_markup=get_keyboard())
 
-    if message.text == "/help":
+    elif message.text == "/help":
         await message.answer(text=config.getHelpText(),
                              parse_mode=ParseMode.HTML)
 

@@ -6,11 +6,12 @@ keyboard_router = Router()
 
 @keyboard_router.callback_query(lambda c: c.data == "btnBan_id")
 async def to_query(callback: types.callback_query):
-    config.usersBan_id.append(callback.from_user.id)
-    config.usersBan.append(f'@{callback.from_user.username}')
+    config.usersBan.append(callback.from_user)
+    config.usersBan_username.append(f'@{callback.from_user.username}')
+
     await update_keyboard(callback.message)
 
-    if len(config.usersBan_id) >= config.limit:
+    if len(config.usersBan) >= config.limit:
         await answer_final_keyboard(callback.message, True)
         await remove_candidate_keyboard()
         await remove_bot_keyboard()
@@ -20,11 +21,11 @@ async def to_query(callback: types.callback_query):
 
 @keyboard_router.callback_query(lambda c: c.data == "btnFree_id")
 async def to_query(callback: types.callback_query):
-    config.usersFree_id.append(callback.from_user.id)
-    config.usersFree.append(f'@{callback.from_user.username}')
+    config.usersFree.append(callback.from_user)
+    config.usersFree_username.append(f'@{callback.from_user.username}')
     await update_keyboard(callback.message)
 
-    if len(config.usersFree_id) >= config.limit:
+    if len(config.usersFree) >= config.limit:
         await answer_final_keyboard(callback.message, False)
         await remove_bot_keyboard()
         await return_variables()
@@ -32,10 +33,10 @@ async def to_query(callback: types.callback_query):
 
 def get_keyboard():
     button_ban = types.InlineKeyboardButton(
-        text=f'Заблокировать {len(config.usersBan_id)}/{config.limit}',
+        text=f'Заблокировать {len(config.usersBan)}/{config.limit}',
         callback_data="btnBan_id")
     button_free = types.InlineKeyboardButton(
-        text=f'Помиловать ✔  {len(config.usersFree_id)}/{config.limit}',
+        text=f'Помиловать ✔  {len(config.usersFree)}/{config.limit}',
         callback_data="btnFree_id")
     buttons = [
         [
@@ -76,13 +77,13 @@ async def return_variables():
     config.candidate = None
     config.userTrigger = None
     config.usersBan = []
-    config.usersFree = []
+    config.usersFree_username = []
 
 
 async def answer_final_keyboard(message: types.Message, result: bool):
     if result:
         await message.answer(text=f'Пользователь @{config.candidate} заблокирован!\n'
-                                  f'Проголосовшие: {", ".join(config.usersBan)}')
+                                  f'Проголосовшие: {", ".join(config.usersBan_username)}')
     else:
         await message.answer(text=f'Пользователь @{config.candidate} помилован!\n'
-                                  f'Проголосовшие: {", ".join(config.usersFree)}')
+                                  f'Проголосовшие: {", ".join(config.usersFree_username)}')
