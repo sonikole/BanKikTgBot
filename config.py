@@ -17,6 +17,29 @@ usersBan_id = []
 usersFree = []
 usersFree_id = []
 
-helpText = f'Чтобы начать голосование за бан, ' \
-           f'ответь на сообщение пользователя одним из триггеров: <b>{", ".join(textTrigger)}</b> \n\n/help'
 
+def getStartText():
+    return f'Чтобы начать голосование за бан, ' \
+           f'ответь на сообщение пользователя одним из триггеров: <b>{", ".join(textTrigger)}</b> \n\n' \
+           f'/help'
+
+
+def getHelpText():
+    return "/help — Показывает это сообщение\n" \
+           "/limit — Изменить количество голосов для кика пользователя\n" \
+           "/addWord — Добавить слово-триггер для начала голосования. Попробуйте например " \
+           "<b>\"/addWord кик\"</b>\n " \
+           "/removeWord — Удалить слово-триггер для начала голосования. \n\n " \
+           f"Текущие слова-триггеры: \n{', '.join(textTrigger)}"
+
+
+def getAddWordText():
+    return f'Теперь затриггерить @{botName} можно с помощью слов: \n<b>{", ".join(textTrigger)}</b>.'
+
+
+def getRemoveWordText():
+    return f'Теперь затриггерить @{botName} можно с помощью слов: \n<b>{", ".join(textTrigger)}</b>.'
+
+
+def getLimitText():
+    return f'Теперь лимит голосующих = {limit}.'
