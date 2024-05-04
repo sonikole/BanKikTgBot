@@ -1,14 +1,14 @@
-from aiogram import types, F, Router
+from aiogram import types, Router
 from aiogram.filters import CommandStart
-from handlers.keyboard import get_keyboard_text, get_keyboard
+from Bot.handlers.keyboard import get_keyboard_text, get_keyboard
 from aiogram.enums import ParseMode
-import config
+from Bot import config
 
 user_private_router = Router()
 
 
 @user_private_router.message(CommandStart())
-async def start_cmd(message: types.Message):
+async def start(message: types.Message):
     await message.answer(text=config.getStartText(),
                          parse_mode=ParseMode.HTML)
 

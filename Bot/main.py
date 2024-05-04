@@ -1,8 +1,8 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 from config import *
-from handlers.keyboard import keyboard_router
-from handlers.user_private import user_private_router
+from Bot.handlers.keyboard import keyboard_router
+from Bot.handlers.user_private import user_private_router
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()

@@ -1,5 +1,5 @@
 from aiogram import types, Router
-import config
+from Bot import config
 
 keyboard_router = Router()
 
