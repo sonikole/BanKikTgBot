@@ -45,9 +45,11 @@ async def get_text_messages(message: types.Message):
 async def is_admin(message: types.Message, user: types.User) -> bool:
     admins = await message.bot.get_chat_administrators(chat_id=message.chat.id)
     admins_id = []
-    
+
     for admin in admins:
         admins_id.append(admin.user.id)
+
+    print(user.id in admins_id)
 
     return user.id in admins_id
 
@@ -57,18 +59,17 @@ async def click_ban(message: types.Message):
     config.userTrigger = message.from_user
 
     if await is_admin(message, config.candidate):
-        print("админ")
+        await message.answer(text=f'Пользователя @{config.candidate.username} нельзя предать правосудию',
+                             parse_mode=ParseMode.HTML)
     else:
-        print("не админ")
-
-    # config.messageCandidate = message.reply_to_message
-    # config.userTrigger = message.from_user
-    # config.usersBan_username.append('@' + config.userTrigger.username)
-    # config.usersBan.append(message.from_user)
-    # config.messageTrigger = message
-    # config.messageToBan = get_keyboard_text()
-    # config.messageBot = await message.answer(text=get_keyboard_text(),
-    #                                          reply_markup=get_keyboard())
+        config.messageCandidate = message.reply_to_message
+        config.userTrigger = message.from_user
+        config.usersBan_username.append('@' + config.userTrigger.username)
+        config.usersBan.append(message.from_user)
+        config.messageTrigger = message
+        config.messageToBan = get_keyboard_text()
+        config.messageBot = await message.answer(text=get_keyboard_text(),
+                                                 reply_markup=get_keyboard())
 
 
 async def click_help(message: types.Message):
