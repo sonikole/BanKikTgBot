@@ -1,11 +1,8 @@
 from aiogram import types, Router
 from aiogram.filters import CommandStart
-from telethon.tl.types import ChannelParticipantAdmin
-
-from Bot.handlers.keyboard import get_keyboard_text, get_keyboard
 from aiogram.enums import ParseMode
+from Bot.handlers.keyboard import get_keyboard_text, get_keyboard
 from Bot import config
-from telethon.tl.functions.channels import GetParticipantsRequest
 
 user_private_router = Router()
 
@@ -18,6 +15,7 @@ async def start(message: types.Message):
 
 @user_private_router.message()
 async def get_text_messages(message: types.Message):
+    config.chat = message.chat
     """Слова-триггеры
     /ban
     /help
@@ -43,7 +41,7 @@ async def get_text_messages(message: types.Message):
 
 
 async def is_admin(message: types.Message, user: types.User) -> bool:
-    admins = await message.bot.get_chat_administrators(chat_id=message.chat.id)
+    admins = await message.bot.get_chat_administrators(chat_id=config.chat.id)
     admins_id = []
 
     for admin in admins:
@@ -53,18 +51,24 @@ async def is_admin(message: types.Message, user: types.User) -> bool:
 
     return user.id in admins_id
 
+async def is_self_ban():
+    return config.candidate.id == config.userTrigger.id
 
 async def click_ban(message: types.Message):
     config.candidate = message.reply_to_message.from_user
     config.userTrigger = message.from_user
 
-    if await is_admin(message, config.candidate):
+    if await is_self_ban():
+        print("самобан запрещен")
+        pass
+    elif await is_admin(message, config.candidate):
+        print("блок админа")
         await message.answer(text=f'Пользователя @{config.candidate.username} нельзя предать правосудию',
                              parse_mode=ParseMode.HTML)
     else:
+        print("блок не админа")
         config.messageCandidate = message.reply_to_message
         config.userTrigger = message.from_user
-        config.usersBan_username.append('@' + config.userTrigger.username)
         config.usersBan.append(message.from_user)
         config.messageTrigger = message
         config.messageToBan = get_keyboard_text()

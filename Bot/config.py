@@ -6,6 +6,8 @@ textTrigger = ["@banuser", "/ban", "спам"]
 
 limit: int = 2
 
+chat = None
+
 candidate = None
 messageCandidate = None
 userTrigger = None
