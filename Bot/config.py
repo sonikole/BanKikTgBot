@@ -4,7 +4,7 @@ ALLOWED_UPDATES = 'message', 'edited_message'
 botName = "BanBot"
 textTrigger = ["@banuser", "спам"]
 
-limit: int = 5
+limit: int = 2
 
 candidate = None
 messageCandidate = None

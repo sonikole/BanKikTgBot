@@ -16,7 +16,7 @@ async def start(message: types.Message):
 @user_private_router.message()
 async def get_text_messages(message: types.Message):
     if message.text.lower() in config.textTrigger:
-        config.candidate = message.reply_to_message.from_user.username
+        config.candidate = message.reply_to_message.from_user
         config.messageCandidate = message.reply_to_message
         config.userTrigger = message.from_user.username
         config.usersBan_username.append('@' + config.userTrigger)
