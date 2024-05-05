@@ -5,46 +5,64 @@ keyboard_router = Router()
 
 
 @keyboard_router.callback_query(lambda c: c.data == "btnBan_id")
-async def click_button_ban(callback: types.callback_query):
+async def button_ban_handler(callback: types.callback_query):
     """ Обработчик события.
     Нажание на кнопку "Заблокировать" """
 
-    config.usersBan.append(callback.from_user)
-    config.usersBan_username.append(f'@{callback.from_user.username}')
+    if callback.from_user in config.usersBan:
+        print("двойное нажатие на 'Заблокировать'")
+        # TODO вернуть, чтобы голосовать один раз
+        # await callback.answer(cache_time=5)
 
-    await update_keyboard(callback.message)
+    else:
+        if callback.from_user in config.usersFree:
+            print("Меняем решение. Убираем из списка 'Помиловать'")
+            config.usersFree.remove(callback.from_user)
 
-    if len(config.usersBan) >= config.limit:
-        await remove_bot_keyboard()
+        print("Нажимаем 'Заблокировать'")
+        config.usersBan.append(callback.from_user)
+        await update_keyboard(callback.message)
 
-        await config.messageCandidate.delete()  # Удалить сообщение кандидата
+        if len(config.usersBan) >= config.limit:
+            await remove_bot_keyboard()
+            await config.messageCandidate.delete()  # Удалить сообщение кандидата
 
-        # TODO включить позже
-        # await callback.message.bot(BanChatMember(chat_id=callback.message.chat.id,
-        #                                          user_id=config.candidate.id))  # блокировка кандидата
-        #
-        # await callback.message.bot(UnbanChatMember(chat_id=callback.message.chat.id,
-        #                                            user_id=config.candidate.id))  # дать возможность кандидату вернуться в группу
+            # TODO включить позже
+            # await callback.message.bot(BanChatMember(chat_id=callback.message.chat.id,
+            #                                          user_id=config.candidate.id))  # блокировка кандидата
+            #
+            # await callback.message.bot(UnbanChatMember(chat_id=callback.message.chat.id,
+            #                                            user_id=config.candidate.id))  # дать возможность кандидату вернуться в группу
 
-        await config.messageTrigger.delete()  # Удалить сообщение пользователя, запросившего блокировку
+            await config.messageTrigger.delete()  # Удалить сообщение пользователя, запросившего блокировку
 
-        await answer_final_keyboard(callback.message, True)
-        await return_variables()
+            await answer_final_keyboard(callback.message, True)
+            await return_variables()
 
 
 @keyboard_router.callback_query(lambda c: c.data == "btnFree_id")
-async def click_button_free(callback: types.callback_query):
+async def button_free_handler(callback: types.callback_query):
     """ Обработчик события.
     Нажание на кнопку "Помиловать" """
 
-    config.usersFree.append(callback.from_user)
-    config.usersFree_username.append(f'@{callback.from_user.username}')
-    await update_keyboard(callback.message)
+    if callback.from_user in config.usersFree:
+        print("двойное нажатие на 'Помиловать'")
+        # TODO вернуть, чтобы голосовать один раз
+        # await callback.answer(cache_time=5)
 
-    if len(config.usersFree) >= config.limit:
-        await answer_final_keyboard(callback.message, False)
-        await remove_bot_keyboard()
-        await return_variables()
+    else:
+        if callback.from_user in config.usersBan:
+            print("Меняем решение. Убираем из списка 'Заблокировать'")
+            config.usersBan.remove(callback.from_user)
+
+        print("Нажимаем 'Помиловать'")
+        config.usersFree.append(callback.from_user)
+        await update_keyboard(callback.message)
+
+        if len(config.usersFree) >= config.limit:
+            await answer_final_keyboard(callback.message, False)
+            await remove_bot_keyboard()
+            await return_variables()
 
 
 def get_keyboard():
@@ -97,14 +115,19 @@ async def return_variables():
     config.candidate = None
     config.userTrigger = None
     config.usersBan = []
-    config.usersFree_username = []
+    config.usersFree = []
 
 
 async def answer_final_keyboard(message: types.Message, result: bool):
     """ Результат голосования """
+    users = []
     if result:
+        for userBan in config.usersBan:
+            users.append(userBan.username)
         await message.answer(text=f'Пользователь @{config.candidate.username} заблокирован!\n'
-                                  f'Проголосовшие: {", ".join(config.usersBan_username)}')
+                                  f'Проголосовшие: @{", @".join(users)}')
     else:
+        for userFree in config.usersFree:
+            users.append(userFree.username)
         await message.answer(text=f'Пользователь @{config.candidate.username} помилован!\n'
-                                  f'Проголосовшие: {", ".join(config.usersFree_username)}')
+                                  f'Проголосовшие: @{", @".join(users)}')
