@@ -2,7 +2,7 @@ TOKEN = "475191343:AAGXlZNUjXPlFr6zkq3bIVXY3fCHiF6JB-s"
 ALLOWED_UPDATES = 'message', 'edited_message'
 
 botName = "BanBot"
-textTrigger = ["@banuser", "спам"]
+textTrigger = ["@banuser", "/ban", "спам"]
 
 limit: int = 2
 
