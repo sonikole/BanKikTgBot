@@ -70,7 +70,7 @@ def get_keyboard():
 def get_keyboard_text():
     """ Сообщение бота.
     Ответ на триггер-слово """
-    return f'@{config.userTrigger} предложено заблокировать пользователя @{config.candidate.username}'
+    return f'@{config.userTrigger.id} предложено заблокировать пользователя @{config.candidate.username}'
 
 
 async def update_keyboard(message: types.Message):

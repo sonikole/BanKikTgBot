@@ -1,8 +1,11 @@
 from aiogram import types, Router
 from aiogram.filters import CommandStart
+from telethon.tl.types import ChannelParticipantAdmin
+
 from Bot.handlers.keyboard import get_keyboard_text, get_keyboard
 from aiogram.enums import ParseMode
 from Bot import config
+from telethon.tl.functions.channels import GetParticipantsRequest
 
 user_private_router = Router()
 
@@ -22,6 +25,7 @@ async def get_text_messages(message: types.Message):
     /addWord
     /removeWord
     """
+
     if message.text.lower() in config.textTrigger:
         await click_ban(message)
 
@@ -38,16 +42,33 @@ async def get_text_messages(message: types.Message):
         await click_remove_word(message)
 
 
+async def is_admin(message: types.Message, user: types.User) -> bool:
+    admins = await message.bot.get_chat_administrators(chat_id=message.chat.id)
+    admins_id = []
+    
+    for admin in admins:
+        admins_id.append(admin.user.id)
+
+    return user.id in admins_id
+
+
 async def click_ban(message: types.Message):
     config.candidate = message.reply_to_message.from_user
-    config.messageCandidate = message.reply_to_message
-    config.userTrigger = message.from_user.username
-    config.usersBan_username.append('@' + config.userTrigger)
-    config.usersBan.append(message.from_user)
-    config.messageTrigger = message
-    config.messageToBan = get_keyboard_text()
-    config.messageBot = await message.answer(text=get_keyboard_text(),
-                                             reply_markup=get_keyboard())
+    config.userTrigger = message.from_user
+
+    if await is_admin(message, config.candidate):
+        print("админ")
+    else:
+        print("не админ")
+
+    # config.messageCandidate = message.reply_to_message
+    # config.userTrigger = message.from_user
+    # config.usersBan_username.append('@' + config.userTrigger.username)
+    # config.usersBan.append(message.from_user)
+    # config.messageTrigger = message
+    # config.messageToBan = get_keyboard_text()
+    # config.messageBot = await message.answer(text=get_keyboard_text(),
+    #                                          reply_markup=get_keyboard())
 
 
 async def click_help(message: types.Message):
