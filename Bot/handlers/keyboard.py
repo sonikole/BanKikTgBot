@@ -78,10 +78,10 @@ def get_keyboard():
     """ Обновить сообщение бота """
 
     button_ban = InlineKeyboardButton(
-        text=f'Заблокировать {len(config.usersBan)}/{config.limit}',
+        text=f'Заблокировать ⛔\n{len(config.usersBan)}/{config.limit}',
         callback_data="btnBan_id")
     button_free = InlineKeyboardButton(
-        text=f'Помиловать ✔  {len(config.usersFree)}/{config.limit}',
+        text=f'Помиловать ✨\n{len(config.usersFree)}/{config.limit}',
         callback_data="btnFree_id")
     buttons = [
         [
