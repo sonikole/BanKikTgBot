@@ -1,4 +1,5 @@
 from aiogram import types, Router
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from Bot import config
 
 keyboard_router = Router()
@@ -11,10 +12,14 @@ async def button_ban_handler(callback: types.callback_query):
 
     if callback.from_user in config.usersBan:
         print("двойное нажатие на 'Заблокировать'")
-        # TODO вернуть, чтобы голосовать один раз
-        # await callback.answer(cache_time=5)
+        await callback.message.bot.answer_callback_query(callback_query_id=callback.id,
+                                                         text="Ваш голос учтен",
+                                                         show_alert=False,
+                                                         cache_time=3)
 
-    else:
+    # TODO вернуть, чтобы голосовать один раз
+    if True:
+    # else:
         if callback.from_user in config.usersFree:
             print("Меняем решение. Убираем из списка 'Помиловать'")
             config.usersFree.remove(callback.from_user)
@@ -47,10 +52,14 @@ async def button_free_handler(callback: types.callback_query):
 
     if callback.from_user in config.usersFree:
         print("двойное нажатие на 'Помиловать'")
-        # TODO вернуть, чтобы голосовать один раз
-        # await callback.answer(cache_time=5)
+        await callback.message.bot.answer_callback_query(callback_query_id=callback.id,
+                                                         text="Ваш голос учтен",
+                                                         show_alert=False,
+                                                         cache_time=3)
 
-    else:
+    # TODO вернуть, чтобы голосовать один раз
+    if True:
+    # else:
         if callback.from_user in config.usersBan:
             print("Меняем решение. Убираем из списка 'Заблокировать'")
             config.usersBan.remove(callback.from_user)
@@ -68,19 +77,21 @@ async def button_free_handler(callback: types.callback_query):
 def get_keyboard():
     """ Обновить сообщение бота """
 
-    button_ban = types.InlineKeyboardButton(
+    button_ban = InlineKeyboardButton(
         text=f'Заблокировать {len(config.usersBan)}/{config.limit}',
         callback_data="btnBan_id")
-    button_free = types.InlineKeyboardButton(
+    button_free = InlineKeyboardButton(
         text=f'Помиловать ✔  {len(config.usersFree)}/{config.limit}',
         callback_data="btnFree_id")
     buttons = [
         [
-            button_ban,
+            button_ban
+        ],
+        [
             button_free
         ]
     ]
-    keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
 
